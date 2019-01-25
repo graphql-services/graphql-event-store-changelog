@@ -15,7 +15,7 @@ func NewQuery(db *DB) Query {
 type changelogParams struct {
 	PrincipalID, Entity, EntityID, Type *string
 	Columns                             *[]string
-	Limit                               *int32
+	Limit                               int32
 }
 
 // ChangeLog ...
@@ -35,9 +35,7 @@ func (q *Query) ChangeLog(params changelogParams) ([]model.ChangeLog, error) {
 	// if params.Columns != nil {
 	// 	query = query.Where(&model.ChangeLog{IColumns: params.Columns})
 	// }
-	if params.Limit != nil {
-		query = query.Limit(*params.Limit)
-	}
+	query = query.Limit(params.Limit)
 	query = query.Order("IDate")
 	query.Find(&items)
 	return items, query.Error
