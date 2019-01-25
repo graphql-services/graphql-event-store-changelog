@@ -2,14 +2,14 @@ package src
 
 // Meta ...
 type Meta struct {
-	Key   string
+	Name  string
 	Value string `gorm:"type:text"`
 }
 
 // GetMeta ...
-func (db *DB) GetMeta(key string) (*Meta, error) {
+func (db *DB) GetMeta(name string) (*Meta, error) {
 	var m Meta
-	res := db.db.First(&m, "key = ?", key)
+	res := db.db.First(&m, "name = ?", name)
 
 	if res.RecordNotFound() {
 		return nil, nil
@@ -19,11 +19,11 @@ func (db *DB) GetMeta(key string) (*Meta, error) {
 }
 
 // SaveMeta ...
-func (db *DB) SaveMeta(meta Meta) error {
+func (db *DB) SaveMeta(name, value string) error {
 	var m Meta
-	if err := db.db.Where(Meta{Key: meta.Key}).FirstOrCreate(&m).Error; err != nil {
+	if err := db.db.Where(Meta{Name: name}).FirstOrCreate(&m).Error; err != nil {
 		return err
 	}
-	err := db.db.Model(&m).Update("value", meta.Value).Error
+	err := db.db.Model(&m).Update("value", value).Error
 	return err
 }

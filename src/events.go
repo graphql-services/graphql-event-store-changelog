@@ -11,12 +11,12 @@ import (
 )
 
 const (
-	latestEventMetaKey = "latestEvent"
+	latestEventMetaName = "latestEvent"
 )
 
 // GetLatestEvent returns [Event,found,error]
 func GetLatestEvent(db *DB) (*eventstore.Event, bool, error) {
-	m, err := db.GetMeta(latestEventMetaKey)
+	m, err := db.GetMeta(latestEventMetaName)
 	if err != nil {
 		return nil, false, err
 	}
@@ -44,8 +44,7 @@ func storeLatestEvent(e *eventstore.Event, db *DB) error {
 	if err != nil {
 		return err
 	}
-	m := Meta{Key: latestEventMetaKey, Value: string(value)}
-	return db.SaveMeta(m)
+	return db.SaveMeta(latestEventMetaName, string(value))
 }
 
 // ImportEvents ...
