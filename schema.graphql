@@ -1,0 +1,38 @@
+scalar Time
+
+schema {
+  query: Query
+}
+
+enum EventStoreChangeLogType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+type EventStoreChangeLog {
+  # ChangeLog identifier
+  id: ID!
+  # Changed entity
+  entity: String!
+  # Changed entity ID
+  entityID: String!
+  # Author of this change
+  principalID: String
+  # Type indicating create/update/delete change type
+  type: EventStoreChangeLogType!
+  # Column separated list of changed columns
+  columns: [String!]!
+}
+
+type Query {
+  changelog(
+    principalID: String
+    entity: String
+    entityID: String
+    type: EventStoreChangeLogType
+    columns: [String!]
+    limit: Int
+  ): [EventStoreChangeLog!]!
+}
+
