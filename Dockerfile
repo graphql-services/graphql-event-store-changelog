@@ -1,15 +1,15 @@
 FROM golang as builder
-WORKDIR /go/src/github.com/graphql-services/graphql-event-store-notifications
+WORKDIR /go/src/github.com/graphql-services/graphql-event-store-changelog
 COPY . .
-RUN go get ./... \
-    && CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /tmp/app .
+RUN go get ./... 
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /tmp/app .
 
 FROM alpine:3.5
 
 WORKDIR /app
 
 COPY --from=builder /tmp/app /usr/local/bin/app
-COPY --from=builder /go/src/github.com/graphql-services/graphql-event-store-notifications/schema.graphql /app/schema.graphql
+COPY --from=builder /go/src/github.com/graphql-services/graphql-event-store-changelog/schema.graphql /app/schema.graphql
 
 # RUN apk --update add docker
 
