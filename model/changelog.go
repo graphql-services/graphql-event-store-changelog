@@ -15,12 +15,12 @@ type ChangeLog struct {
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 	DeletedAt    *time.Time `sql:"index"`
-	IEntity      string
-	IEntityID    string
-	IType        string
-	IColumns     string
-	IPrincipalID *string
-	IDate        time.Time
+	IEntity      string     `gorm:"column:entity"`
+	IEntityID    string     `gorm:"column:entityId"`
+	IType        string     `gorm:"column:type"`
+	IColumns     string     `gorm:"column:columns"`
+	IPrincipalID *string    `gorm:"column:principalId"`
+	IDate        time.Time  `gorm:"column:date"`
 }
 
 // ChangeLogInput ...

@@ -1,6 +1,8 @@
 package src
 
 import (
+	"strings"
+
 	"github.com/graphql-services/graphql-event-store-changelog/model"
 )
 
@@ -33,12 +35,16 @@ func (q *Query) ChangeLog(params changelogParams) ([]model.ChangeLog, error) {
 	}
 	query = query.Where(&model.ChangeLog{IPrincipalID: params.PrincipalID})
 	if params.Columns != nil {
+		conditions := []string{}
+		values := []interface{}{}
 		for _, col := range *params.Columns {
-			query = query.Or("columns LIKE ?", "%#"+col+"#%")
+			conditions = append(conditions, "columns LIKE ?")
+			values = append(values, "%#"+col+"#%")
 		}
+		query = query.Where(strings.Join(conditions, " OR "), values...)
 	}
 	query = query.Limit(params.Limit)
-	query = query.Order("IDate")
+	query = query.Order("date")
 	query.Find(&items)
 	return items, query.Error
 }
