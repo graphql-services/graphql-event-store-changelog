@@ -34,6 +34,7 @@ type Query {
     entityID: String
     type: EventStoreChangeLogType
     columns: [String!]
+    offset: Int = 0
     limit: Int = 30
   ): [EventStoreChangeLog!]!
 }
