@@ -34,7 +34,7 @@ type Query {
     entityID: String
     type: EventStoreChangeLogType
     columns: [String!]
-    limit: Int! = 30
+    limit: Int = 30
   ): [EventStoreChangeLog!]!
 }
 

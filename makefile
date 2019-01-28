@@ -36,5 +36,5 @@ deploy-local:
 	mv $(IMAGE_NAME) /usr/local/bin/
 
 test:
-	DATABASE_URL=sqlite3://test.db go run **/*.go server -p 8000
+	make deploy-local && DATABASE_URL=sqlite3://test.db $(IMAGE_NAME) server -p 8000
 	# DATABASE_URL="mysql://root:root@tcp(localhost:3306)/test?parseTime=true" go run *.go server -p 8000
