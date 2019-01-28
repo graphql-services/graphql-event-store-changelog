@@ -23,6 +23,8 @@ type EventStoreChangeLog {
   type: EventStoreChangeLogType!
   # Column separated list of changed columns
   columns: [String!]!
+  # When this change happened
+  date: Time!
 }
 
 type Query {
