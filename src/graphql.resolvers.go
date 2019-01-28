@@ -32,9 +32,11 @@ func (q *Query) ChangeLog(params changelogParams) ([]model.ChangeLog, error) {
 		query = query.Where(&model.ChangeLog{IType: *params.Type})
 	}
 	query = query.Where(&model.ChangeLog{IPrincipalID: params.PrincipalID})
-	// if params.Columns != nil {
-	// 	query = query.Where(&model.ChangeLog{IColumns: params.Columns})
-	// }
+	if params.Columns != nil {
+		for _, col := range *params.Columns {
+			query = query.Or("columns LIKE ?", "%#"+col+"#%")
+		}
+	}
 	query = query.Limit(params.Limit)
 	query = query.Order("IDate")
 	query.Find(&items)

@@ -41,7 +41,7 @@ func NewChangeLog(i ChangeLogInput) ChangeLog {
 		IEntity:      i.Entity,
 		IEntityID:    i.EntityID,
 		IType:        i.Type,
-		IColumns:     strings.Join(i.Columns, ","),
+		IColumns:     "#" + strings.Join(i.Columns, "#,#") + "#",
 		IPrincipalID: i.PrincipalID,
 		IDate:        i.Date.Time,
 	}
