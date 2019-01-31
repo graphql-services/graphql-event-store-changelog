@@ -14,7 +14,7 @@ type ChangeLogChange struct {
 	INewValue *string
 }
 
-// Name ...
+// Column ...
 func (n ChangeLogChange) Column() string {
 	return n.IColumn
 }

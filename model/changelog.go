@@ -76,7 +76,7 @@ func NewChangeLog(e eventstore.Event) ChangeLog {
 		IID:          id,
 		IEntity:      e.Entity,
 		IEntityID:    e.EntityID,
-		IType:        e.Type,
+		IType:        string(e.Type),
 		IColumns:     "#" + strings.Join(e.Columns, "#,#") + "#",
 		IChanges:     string(changesJSON),
 		IPrincipalID: e.PrincipalID,
