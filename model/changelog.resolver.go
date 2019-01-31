@@ -1,10 +1,33 @@
 package model
 
 import (
+	"encoding/json"
 	"strings"
 
 	graphql "github.com/graph-gophers/graphql-go"
 )
+
+// ChangeLogChange ...
+type ChangeLogChange struct {
+	IColumn   string
+	IOldValue *string
+	INewValue *string
+}
+
+// Name ...
+func (n ChangeLogChange) Column() string {
+	return n.IColumn
+}
+
+// OldValue ...
+func (n ChangeLogChange) OldValue() *string {
+	return n.IOldValue
+}
+
+// NewValue ...
+func (n ChangeLogChange) NewValue() *string {
+	return n.INewValue
+}
 
 // ID ...
 func (n ChangeLog) ID() graphql.ID {
@@ -26,9 +49,18 @@ func (n ChangeLog) Type() string {
 	return n.IType
 }
 
+// Changes ...
+func (n ChangeLog) Changes() []ChangeLogChange {
+	var changes []ChangeLogChange
+	if err := json.Unmarshal([]byte(n.IChanges), &changes); err != nil {
+		panic(err)
+	}
+	return changes
+}
+
 // Columns ...
 func (n ChangeLog) Columns() []string {
-	return strings.Split(n.IColumns, ",")
+	return strings.Split(strings.Trim(n.IColumns, "#"), "#,#")
 }
 
 // PrincipalID ...

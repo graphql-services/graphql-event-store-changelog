@@ -1,8 +1,12 @@
 package model
 
 import (
+	"encoding/json"
+	"fmt"
 	"strings"
 	"time"
+
+	"github.com/graphql-services/go-saga/eventstore"
 
 	graphql "github.com/graph-gophers/graphql-go"
 	uuid "github.com/satori/go.uuid"
@@ -19,6 +23,7 @@ type ChangeLog struct {
 	IEntityID    string     `gorm:"column:entityId"`
 	IType        string     `gorm:"column:type"`
 	IColumns     string     `gorm:"column:columns"`
+	IChanges     string     `gorm:"column:changes;type:text"`
 	IPrincipalID *string    `gorm:"column:principalId"`
 	IDate        time.Time  `gorm:"column:date"`
 }
@@ -29,20 +34,49 @@ type ChangeLogInput struct {
 	EntityID    string
 	Type        string
 	Columns     []string
+	Changes     string
 	PrincipalID *string
 	Date        graphql.Time
 }
 
 // NewChangeLog ...
-func NewChangeLog(i ChangeLogInput) ChangeLog {
+func NewChangeLog(e eventstore.Event) ChangeLog {
+	changes := []ChangeLogChange{}
+
+	for _, column := range e.Columns {
+		var oldValue *string
+		var newValue *string
+
+		if e.OldValues[column] != nil {
+			val := fmt.Sprintf("%v", e.OldValues[column])
+			oldValue = &val
+		}
+		if e.NewValues[column] != nil {
+			val := fmt.Sprintf("%v", e.NewValues[column])
+			newValue = &val
+		}
+
+		ch := ChangeLogChange{
+			IColumn:   column,
+			IOldValue: oldValue,
+			INewValue: newValue,
+		}
+		changes = append(changes, ch)
+	}
+
+	changesJSON, err := json.Marshal(changes)
+	if err != nil {
+		panic(err)
+	}
 	id := uuid.Must(uuid.NewV4())
 	return ChangeLog{
 		IID:          id,
-		IEntity:      i.Entity,
-		IEntityID:    i.EntityID,
-		IType:        i.Type,
-		IColumns:     "#" + strings.Join(i.Columns, "#,#") + "#",
-		IPrincipalID: i.PrincipalID,
-		IDate:        i.Date.Time,
+		IEntity:      e.Entity,
+		IEntityID:    e.EntityID,
+		IType:        e.Type,
+		IColumns:     "#" + strings.Join(e.Columns, "#,#") + "#",
+		IChanges:     string(changesJSON),
+		IPrincipalID: e.PrincipalID,
+		IDate:        e.Date,
 	}
 }

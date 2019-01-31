@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -24,6 +25,7 @@ func EventsHandler(r *mux.Router, db *src.DB) error {
 
 		var e eventstore.Event
 		err = json.Unmarshal(body, &e)
+		fmt.Println("Event!!", string(body))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return

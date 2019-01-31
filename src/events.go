@@ -5,7 +5,6 @@ import (
 
 	"github.com/golang/glog"
 
-	graphql "github.com/graph-gophers/graphql-go"
 	"github.com/graphql-services/go-saga/eventstore"
 	"github.com/graphql-services/graphql-event-store-changelog/model"
 )
@@ -56,15 +55,7 @@ func ImportEvents(events []eventstore.Event, db *DB) error {
 
 	tx := db.db.Begin()
 	for _, event := range events {
-		input := model.ChangeLogInput{
-			Entity:      event.Entity,
-			EntityID:    event.EntityID,
-			Type:        event.Type,
-			Columns:     event.Columns,
-			PrincipalID: event.PrincipalID,
-			Date:        graphql.Time{Time: event.Date},
-		}
-		cl := model.NewChangeLog(input)
+		cl := model.NewChangeLog(event)
 		err := db.db.Create(&cl).Error
 		if err != nil {
 			tx.Rollback()

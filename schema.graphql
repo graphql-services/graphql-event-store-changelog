@@ -10,6 +10,12 @@ enum EventStoreChangeLogType {
   DELETED
 }
 
+type EventStoreChangeLogChange {
+  column: String!
+  oldValue: String
+  newValue: String
+}
+
 type EventStoreChangeLog {
   # ChangeLog identifier
   id: ID!
@@ -23,6 +29,8 @@ type EventStoreChangeLog {
   type: EventStoreChangeLogType!
   # Column separated list of changed columns
   columns: [String!]!
+  # List of changed values
+  changes: [EventStoreChangeLogChange!]!
   # When this change happened
   date: Time!
 }
@@ -38,4 +46,3 @@ type Query {
     limit: Int = 30
   ): [EventStoreChangeLog!]!
 }
-
