@@ -2,7 +2,6 @@ package model
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 	"time"
 
@@ -47,13 +46,17 @@ func NewChangeLog(e eventstore.Event) ChangeLog {
 		var oldValue *string
 		var newValue *string
 
-		if e.OldValues[column] != nil {
-			val := fmt.Sprintf("%v", e.OldValues[column])
-			oldValue = &val
+		for _, val := range e.OldValues {
+			if val.Name == column {
+				oldValue = val.Value
+				break
+			}
 		}
-		if e.NewValues[column] != nil {
-			val := fmt.Sprintf("%v", e.NewValues[column])
-			newValue = &val
+		for _, val := range e.NewValues {
+			if val.Name == column {
+				newValue = val.Value
+				break
+			}
 		}
 
 		ch := ChangeLogChange{
